@@ -29,6 +29,13 @@
 #define config_h
 #include "grbl.h" // For Arduino IDE compatibility.
 
+enum MachineType {
+  RCMINI,
+  BAMBOO
+}
+
+#define MACHINE_TYPE MachineType::BAMBOO
+
 
 // Define CPU pin map and default settings.
 // NOTE: OEMs can avoid the need to maintain/update the defaults.h and cpu_map.h files and use only

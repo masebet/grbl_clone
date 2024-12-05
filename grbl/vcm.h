@@ -1,0 +1,2 @@
+
+void vcm_init();

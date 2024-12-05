@@ -369,7 +369,7 @@ void report_execute_startup_message(char *line, uint8_t status_code)
 // Prints build info line
 void report_build_info(char *line)
 {
-  printPgmString(PSTR("[VER:" GRBL_VERSION "." GRBL_VERSION_BUILD ":"));
+  printPgmString(PSTR("[VER:" GRBL_VERSION "." GRBL_VERSION_BUILD ":" MACHINE_TYPE ":" ));
   printString(line);
   report_util_feedback_line_feed();
   printPgmString(PSTR("[OPT:")); // Generate compile-time build option list
@@ -568,7 +568,8 @@ void report_realtime_status()
     uint8_t lim_pin_state = limits_get_state();
     uint8_t ctrl_pin_state = system_control_get_state();
     uint8_t prb_pin_state = probe_get_state();
-    if (lim_pin_state | ctrl_pin_state | prb_pin_state) {
+    uint8_t pinch_roller_state = pinch_roller_get_state();
+    if ((lim_pin_state | ctrl_pin_state | prb_pin_state) || pinch_roller_state) {
       printPgmString(PSTR("|Pn:"));
       if (prb_pin_state) { serial_write('P'); }
       if (lim_pin_state) {
@@ -586,6 +587,7 @@ void report_realtime_status()
           if (bit_istrue(lim_pin_state,bit(X_AXIS))) { serial_write('X'); }
           if (bit_istrue(lim_pin_state,bit(Y_AXIS))) { serial_write('Y'); }
           if (bit_istrue(lim_pin_state,bit(Z_AXIS))) { serial_write('Z'); }
+          if (pinch_roller_state) { serial_write('R'); }
         #endif
       }
       if (ctrl_pin_state) {
