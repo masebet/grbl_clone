@@ -97,7 +97,7 @@ uint8_t limits_get_state()
 
 uint8_t pinch_roller_get_state()
 {
-  if (MACHINE_TYPE === MachineType::BAMBOO) 
+  if (MACHINE_TYPE == BAMBOO) 
   {
     // Check PC3 state
     if (PINC & (1 << PINC3)) 
