@@ -36,7 +36,7 @@ typedef enum {
 
 // ? Default machine type to RCMINI if not provided by compiler
 #ifndef MACHINE_TYPE
-#define MACHINE_TYPE RCMINI
+#error "Must define MACHINE_TYPE in compiler options"
 #endif
 
 // Define CPU pin map and default settings.

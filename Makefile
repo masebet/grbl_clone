@@ -3,6 +3,7 @@ SRC_DIR = $(PROJECT_NAME)
 INO_FILE = $(PROJECT_NAME)/grbl.ino
 BUILD_DIR = build
 BOARD = arduino:avr:uno
+VERSION = 1.2h
 
 PORT = $(shell ls /dev/cu.usbmodem* 2>/dev/null | head -n 1)
 
@@ -14,17 +15,23 @@ all: build_rcmini build_bamboo
 .PHONY: build_rcmini
 build_rcmini:
 	@mkdir -p $(BUILD_DIR)
-	@arduino-cli compile --fqbn $(BOARD) --build-path $(BUILD_DIR)/rcmini --build-property compiler.cpp.extra_flags="-DMACHINE_TYPE=RCMINI" $(INO_FILE)
-	@mv $(BUILD_DIR)/rcmini/$(PROJECT_NAME).ino.hex $(BUILD_DIR)/rcmini.hex
-	@echo "Built RC Mini firmware: $(BUILD_DIR)/rcmini.hex"
+	@arduino-cli compile --fqbn $(BOARD) \
+		--build-path $(BUILD_DIR)/rcmini \
+		--build-property "build.extra_flags=-DMACHINE_TYPE=RCMINI -DGRBL_VERSION=\"$(VERSION)\"" \
+		$(INO_FILE)
+	@cp $(BUILD_DIR)/rcmini/$(PROJECT_NAME).ino.hex $(BUILD_DIR)/rcmini$(VERSION).hex
+	@echo "Built RC Mini firmware: $(BUILD_DIR)/rcmini$(VERSION).hex"
 
 # Build target for Bamboo
 .PHONY: build_bamboo
 build_bamboo:
 	@mkdir -p $(BUILD_DIR)
-	@arduino-cli compile --fqbn $(BOARD) --build-path $(BUILD_DIR)/bamboo --build-property compiler.cpp.extra_flags="-DMACHINE_TYPE=BAMBOO" $(INO_FILE)
-	@mv $(BUILD_DIR)/bamboo/$(PROJECT_NAME).ino.hex $(BUILD_DIR)/bamboo.hex
-	@echo "Built Bamboo firmware: $(BUILD_DIR)/bamboo.hex"
+	@arduino-cli compile --fqbn $(BOARD) \
+		--build-path $(BUILD_DIR)/bamboo \
+		--build-property "build.extra_flags=-DMACHINE_TYPE=BAMBOO -DGRBL_VERSION=\"$(VERSION)\"" \
+		$(INO_FILE)
+	@cp $(BUILD_DIR)/bamboo/$(PROJECT_NAME).ino.hex $(BUILD_DIR)/bamboo$(VERSION).hex
+	@echo "Built Bamboo firmware: $(BUILD_DIR)/bamboo$(VERSION).hex"
 
 # Flash RC Mini firmware
 .PHONY: flash_rcmini

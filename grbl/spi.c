@@ -43,14 +43,16 @@ void spi_write(uint8_t cs_port, uint8_t cs_pin, uint8_t address, uint8_t data) {
  *  111b = Smart tune Ripple Control
  */
 void motor_spi_init() {
-    // Configure Chip Select pins as outputs
-    DDRC |= (1 << CS1_PIN) | (1 << CS2_PIN);
-    CS1_PORT |= (1 << CS1_PIN);  // Set CS high (deselect)
-    CS2_PORT |= (1 << CS2_PIN);  // Set CS high (deselect)
+    if (MACHINE_TYPE == BAMBOO) {
+        // Configure Chip Select pins as outputs
+        DDRC |= (1 << CS1_PIN) | (1 << CS2_PIN);
+        CS1_PORT |= (1 << CS1_PIN);  // Set CS high (deselect)
+        CS2_PORT |= (1 << CS2_PIN);  // Set CS high (deselect)
 
-    // Send configuration to Driver 1
-    spi_write(CS1_PORT, CS1_PIN, 0x04, 0x07);
+        // Send configuration to Driver 1
+        spi_write(CS1_PORT, CS1_PIN, 0x04, 0x07);
 
-    // Send configuration to Driver 2
-    spi_write(CS2_PORT, CS2_PIN, 0x04, 0x07);
+        // Send configuration to Driver 2
+        spi_write(CS2_PORT, CS2_PIN, 0x04, 0x07);
+    }
 }

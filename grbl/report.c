@@ -366,11 +366,35 @@ void report_execute_startup_message(char *line, uint8_t status_code)
   report_status_message(status_code);
 }
 
+const char* machine_type_to_string(int type) {
+    switch (type) {
+        case RCMINI:
+            return "RCMINI";
+        case BAMBOO:
+            return "BAMBOO";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+void print_version() {
+    // Create a buffer for the resulting string
+    char versionStr[100];  // Make sure the buffer is large enough
+
+    // Get the machine name using the switch function
+    const char* MACHINE_NAME = machine_type_to_string(MACHINE_TYPE);
+
+    // Concatenate the parts into the buffer
+    snprintf(versionStr, sizeof(versionStr), "[VER:%s.%s:%s", GRBL_VERSION, GRBL_VERSION_BUILD, MACHINE_NAME);
+
+    printString(versionStr);
+}
+
+
 // Prints build info line
 void report_build_info(char *line)
 {
-  printPgmString(PSTR("[VER:" GRBL_VERSION "." GRBL_VERSION_BUILD ":"));
-  printString(line);
+  print_version();
   report_util_feedback_line_feed();
   printPgmString(PSTR("[OPT:")); // Generate compile-time build option list
   #ifdef VARIABLE_SPINDLE
