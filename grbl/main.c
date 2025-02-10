@@ -66,6 +66,10 @@ int main(void)
     if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { sys.state = STATE_ALARM; }
   #endif
 
+  vcm_init();
+  motor_spi_init();
+  PORTD |= (1 << PORTD7);
+
   // Grbl initialization loop upon power-up or a system abort. For the latter, all processes
   // will return to this loop to be cleanly re-initialized.
   for(;;) {
@@ -91,8 +95,6 @@ int main(void)
     coolant_init();
     limits_init();
     probe_init();
-    vcm_init();
-    motor_spi_init();
     plan_reset(); // Clear block buffer and planner variables
     st_reset(); // Clear stepper subsystem variables.
 
