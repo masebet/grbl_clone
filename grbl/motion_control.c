@@ -277,6 +277,9 @@ uint8_t mc_probe_cycle(float *target, plan_line_data_t *pl_data, uint8_t parser_
     return(GC_PROBE_FAIL_INIT); // Nothing else to do but bail.
   }
 
+  // Z Probing simplification : if Z travel exceeds soft limits, adjust Z to max. allowed value as probing stop is anyhow expected
+  system_do_limit_Z_travel(target);
+  
   // Setup and queue probing motion. Auto cycle-start should not start the cycle.
   mc_line(target, pl_data);
 

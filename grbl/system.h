@@ -198,6 +198,9 @@ void system_convert_array_steps_to_mpos(float *position, int32_t *steps);
 // Checks and reports if target array exceeds machine travel limits.
 uint8_t system_check_travel_limits(float *target);
 
+// Z Probing simplification : if Z travel exceeds soft limits, adjust Z to max. allowed value as probing stop is anyhow expected
+uint8_t system_do_limit_Z_travel(float *target);
+
 // Special handlers for setting and clearing Grbl's real-time execution flags.
 void system_set_exec_state_flag(uint8_t mask);
 void system_clear_exec_state_flag(uint8_t mask);

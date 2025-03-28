@@ -351,6 +351,24 @@ uint8_t system_check_travel_limits(float *target)
   return(false);
 }
 
+// Z Probing simplification : if Z travel exceeds soft limits, adjust Z to max. allowed value as probing stop is anyhow expected
+// function code derived from above soft limit check
+uint8_t system_do_limit_Z_travel(float *target)
+{
+    #ifdef HOMING_FORCE_SET_ORIGIN
+      // When homing forced set origin is enabled, soft limits checks need to account for directionality.
+      // NOTE: max_travel is stored as negative
+      if (bit_istrue(settings.homing_dir_mask,bit(Z_AXIS))) {
+        if (target[Z_AXIS] < 0 || target[Z_AXIS] > -settings.max_travel[Z_AXIS]) { target[Z_AXIS] = -settings.max_travel[Z_AXIS]; return(true); }
+      } else {
+        if (target[Z_AXIS] > 0 || target[Z_AXIS] <  settings.max_travel[Z_AXIS]) { target[Z_AXIS] =  settings.max_travel[Z_AXIS]; return(true); }
+      }
+    #else
+      // NOTE: max_travel is stored as negative
+        if (target[Z_AXIS] > 0 || target[Z_AXIS] <  settings.max_travel[Z_AXIS]) { target[Z_AXIS] =  settings.max_travel[Z_AXIS]; return(true); }
+    #endif
+  return(false);
+}
 
 // Special handlers for setting and clearing Grbl's real-time execution flags.
 void system_set_exec_state_flag(uint8_t mask) {
