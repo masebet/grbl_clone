@@ -5,7 +5,12 @@ BUILD_DIR = build
 BOARD = arduino:avr:uno
 VERSION = 1.2h
 
-PORT = $(shell ls /dev/cu.usbmodem* 2>/dev/null | head -n 1)
+# Cross-platform port detection
+ifeq ($(OS),Windows_NT)
+	PORT = $(shell powershell -Command "Get-WmiObject -Class Win32_SerialPort | Where-Object {$$_.Description -like '*Arduino*' -or $$_.Description -like '*USB*'} | Select-Object -First 1 -ExpandProperty DeviceID" 2>nul)
+else
+	PORT = $(shell ls /dev/cu.usbmodem* 2>/dev/null | head -n 1)
+endif
 
 # Default build target
 .PHONY: all
@@ -56,5 +61,9 @@ endif
 # Clean the build files
 .PHONY: clean
 clean:
+ifeq ($(OS),Windows_NT)
+	@if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+else
 	@rm -rf $(BUILD_DIR)
+endif
 	@echo "Build directory cleaned"
